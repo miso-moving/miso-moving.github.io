@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>미소 참여 가능 주문</title>
+<title>미소 영상견적 참여 가능 주문</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
@@ -33,16 +33,16 @@
 
 <script>
   // ── 폴더별로 이 값만 다르게: /manual/ 에선 'manual', /today/ 에선 'today' ──
-  var TYPE = 'manual';
+  var TYPE = 'today';
 
   // Apps Script 웹앱 /exec 주소 (배포 후 교체)
-  var EXEC_URL = 'PASTE_AFTER_DEPLOY';
+  var EXEC_URL = 'https://script.google.com/macros/s/AKfycbwg7qWmeSrtFDbsdpMTemopl_p-hIaG8-09E15u8EvUlfqt5ZzjiAnwLUqKe4-L-r2d/exec';
 
   var COPY = {
-    manual: { title: '참여 가능한 주문',
+    manual: { title: '참여가 적은 주문',
               desc: '아직 참여한 업체가 적은 주문이에요.<br>지금 제출하시면 노출 가능성이 높습니다.' },
-    today:  { title: '오늘 공유된 주문',
-              desc: '오늘 공유된 주문 중 파트너님의 참여를 기다리는 건들이에요.<br>시간 되실 때 가볍게 확인해보세요.' }
+    today:  { title: '오늘 올라온 주문',
+              desc: '오늘 올라온 주문 중 파트너님의 참여를 기다리는 건들이에요.<br>하루를 마무리하며 가볍게 확인해주세요.' }
   };
 
   function esc(s){ return String(s==null?'':s)
