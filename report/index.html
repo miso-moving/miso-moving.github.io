@@ -79,6 +79,11 @@
   };
 
   function n(v){ var x = parseFloat(v); return isNaN(x) ? 0 : x; }
+  function ym(m){ m = String(m).replace(/\D/g,'').slice(0,6);
+   return { y: +m.slice(0,4), mo: +m.slice(4,6) }; }
+  function addM(o,d){ var mo = o.mo+d, y = o.y;
+    if(mo > 12){ mo -= 12; y++; } if(mo < 1){ mo += 12; y--; }
+    return { y: y, mo: mo }; }
   function esc(s){ return String(s==null?'':s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function fix2(v){ return (Math.round(n(v)*100)/100).toFixed(2); }
@@ -122,6 +127,7 @@
 
   function render(res){
     var d = res.data;
+    var dm = ym(d.month), pm = addM(dm,-1), sm = addM(dm,1);
     var hasApr = d.apr_quote_cnt !== '' && d.apr_quote_cnt !== null && d.apr_quote_cnt !== undefined;
     var lwm    = n(d.lost_with_matched_cnt);
 
@@ -148,13 +154,13 @@
     var h = '';
 
     h += '<div class="hd"><div class="hd-text"><h1>'+esc(d.partner_name)+' 대표님</h1>';
-    h += '<div class="pd">2026년 6월 파트너 리포트가 도착했어요!</div></div>';
+    h += '<div class="pd">'+sm.y+'년 '+sm.mo+'월 파트너 리포트가 도착했어요!</div></div>';
     h += '<img class="logo" src="'+LOGO+'" alt="miso"></div>';
 
     h += '<div class="cd"><div class="ey">활동 요약</div><h2>미소에서 이렇게 활동 하셨어요</h2>';
     h += '<div class="cmp">';
     if(hasApr){
-      h += '<div class="ml">4월</div><div></div><div class="ml">5월</div>';
+      h += '<div class="ml">'+pm.mo+'월</div><div></div><div class="ml">'+dm.mo+'월</div>';
       h += '<div><div class="nm">'+n(d.apr_quote_cnt)+'</div></div><div class="ar">견적 제출 →</div><div><div class="nm">'+n(d.may_quote_cnt)+'</div></div>';
       h += '<div class="rv"></div>';
       h += '<div><div class="nm">'+n(d.apr_contracted_cnt)+'</div></div><div class="ar">계약 →</div><div><div class="nm">'+n(d.may_contracted_cnt)+'</div></div>';
@@ -162,14 +168,14 @@
       h += '<div><div class="nm">'+n(d.apr_psr)+'%</div></div><div class="ar">전환율 →</div><div><div class="nm">'+n(d.may_psr)+'%</div></div>';
     } else {
       h += '<div style="grid-column:1/4;padding:10px 0">';
-      h += '<div style="font-size:13px;color:#6B7280;margin-bottom:10px">5월 첫 활동 기준</div>';
+      h += '<div style="font-size:13px;color:#6B7280;margin-bottom:10px">'+dm.mo+'월 첫 활동 기준</div>';
       h += '<div style="font-size:21px;font-weight:700">'+n(d.may_quote_cnt)+'</div>';
       h += '<div style="font-size:13px;color:#6B7280;margin-top:2px">견적 제출 · 계약 '+n(d.may_contracted_cnt)+'건 · 전환율 '+n(d.may_psr)+'%</div></div>';
     }
     h += '</div>';
     h += '<div class="nt">전체 파트너 평균 전환율은 <b style="color:#2563EB">'+avgPsr+'%</b>예요.<br><span style="color:'+psrColor+'">'+psrMsg+'</span></div></div>';
 
-    h += '<div class="cd"><div class="ey">포지셔닝 · 5월 기준</div><h2>놓친 주문에서 대표님은...</h2>';
+    h += '<div class="cd"><div class="ey">포지셔닝 · '+dm.mo+'월 기준</div><h2>놓친 주문에서 대표님은...</h2>';
     if(lwm < 3){
       h += '<div class="nd">이번 달은 비교 가능한 데이터가 충분하지 않아<br>포지셔닝 분석이 제공되지 않아요.</div>';
     } else {
@@ -238,10 +244,14 @@
   };
 
   function load(){
-    var pid = new URLSearchParams(location.search).get('pid');
+    var params = new URLSearchParams(location.search);
+    var pid = params.get('pid');
+    var month = params.get('month');
     if(!pid){ showState('잘못된 접근입니다.<br>문자로 받으신 링크로 다시 들어와주세요.'); return; }
     var s = document.createElement('script');
-    s.src = EXEC_URL + '?pid=' + encodeURIComponent(pid) + '&callback=__cb';
+    s.src = EXEC_URL + '?pid=' + encodeURIComponent(pid)
+          + (month ? '&month=' + encodeURIComponent(month) : '')
+          + '&callback=__cb';
     s.onerror = function(){ showState('리포트를 불러오지 못했어요.<br>잠시 후 다시 시도해주세요.'); };
     document.body.appendChild(s);
   }
