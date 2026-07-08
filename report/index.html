@@ -229,7 +229,7 @@
     }
 
     h += '<div class="cd"><div class="ey">포지셔닝 · '+dm.mo+'월 기준</div><h2>놓친 주문에서 대표님은...</h2>';
-    if(lwm < 3){
+    if(lwm < 5){
       h += '<div class="nd">이번 달은 비교 가능한 데이터가 충분하지 않아<br>포지셔닝 분석이 제공되지 않아요.</div>';
     } else {
       h += '<div class="ps">참여하신 주문에서 고객이 고른 다른 파트너님의 견적과 비교했어요.</div>';
@@ -254,7 +254,7 @@
 
     // 코칭 — lwm<3이면 포지셔닝과 동일 판정으로 안내문구 대체 (근거 없이 결론만 내는 것 방지)
     h += '<div class="cd"><div class="ey">코칭</div><h2>데이터가 말해주는 것</h2>';
-    if (lwm < 3) {
+    if (lwm < 5) {
       h += '<div class="nd">분석을 위해 더 많은 참여가 필요해요.</div>';
     } else {
       h += '<div class="ch"><div class="ci">'+ICONS[coaching.icon]+'</div><div class="cb"><strong>'+coaching.title+'</strong>';
