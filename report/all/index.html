@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미소방문 파트너 리포트 · 지난 리포트</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-text-size-adjust:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    background:#F6F7F9;color:#1A1D24;line-height:1.6;padding:0 0 44px}
+  .w{max-width:440px;margin:0 auto}
+  .hd{background:#2563EB;color:#fff;padding:22px 22px 20px;
+      display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .hd-text{flex:1;min-width:0}
+  .hd h1{font-size:20px;font-weight:700;margin:0 0 6px}
+  .hd .pd{font-size:13px;opacity:.9}
+  .cd{background:#fff;margin:13px 16px 0;border-radius:16px;padding:20px 19px;
+    box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .ey{font-size:12px;font-weight:700;color:#2563EB;letter-spacing:.03em;margin-bottom:4px}
+  h2{font-size:17px;font-weight:700;margin:0 0 14px}
+  /* 월 목록 */
+  .ml-list{display:block}
+  .mi{display:flex;align-items:center;gap:12px;padding:14px 15px;
+    background:#F6F7F9;border-radius:11px;text-decoration:none;color:inherit;
+    margin-bottom:8px;transition:background .15s}
+  .mi:last-child{margin-bottom:0}
+  .mi:active{background:#EFF4FF}
+  .mi-b{flex:1;min-width:0}
+  .mi-t{font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:7px}
+  .mi-s{font-size:12.5px;color:#6B7280;margin-top:2px}
+  .badge{font-size:11px;font-weight:700;color:#2563EB;background:#EFF4FF;
+    border-radius:20px;padding:2px 9px;letter-spacing:.02em}
+  .chev{flex-shrink:0;width:18px;height:18px;stroke:#9AA1AC;fill:none;
+    stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .nd{background:#F6F7F9;border-radius:11px;padding:18px;text-align:center;
+    font-size:13px;color:#6B7280;line-height:1.6}
+  .ft{text-align:center;font-size:12px;color:#6B7280;margin:20px 20px 0;line-height:1.7}
+  .state{background:#fff;border-radius:12px;margin:40px 16px;padding:40px 20px;
+    text-align:center;color:#6B7280;font-size:14px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="w" id="root">
+  <div class="state">불러오는 중...</div>
+</div>
+<script>
+  var EXEC_URL = 'https://script.google.com/macros/s/AKfycbxnuab1oGIg4Q5KhMzkeF3HUODR26ZPjeANzC6nMtjpbKL20XdPGePYEI-_Lcwuxke2/exec';
+
+  function esc(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  // 데이터월(yyyymm) → 파트너가 문자로 받은 발송월 라벨. GAS sendMonthLabel_ 과 동일 규칙(+1개월)
+  function sendLabel(m){
+    var y = parseInt(String(m).substr(0,4),10), mo = parseInt(String(m).substr(4,2),10);
+    mo++; if(mo === 13){ mo = 1; y++; }
+    return y + '년 ' + mo + '월';
+  }
+  // 데이터월 자체 라벨 (실적 기준 기간)
+  function dataLabel(m){
+    return parseInt(String(m).substr(0,4),10) + '년 ' + parseInt(String(m).substr(4,2),10) + '월';
+  }
+
+  function showState(msg){
+    document.getElementById('root').innerHTML = '<div class="state">'+msg+'</div>';
+  }
+
+  function render(res){
+    var pid    = res.pid;
+    var name   = res.partner_name || '';
+    var months = (res.months || []).slice().sort().reverse();  // 최신순
+
+    var h = '';
+    h += '<div class="hd"><div class="hd-text">';
+    h += '<h1>지난 리포트</h1>';
+    h += '<div class="pd">' + (name ? esc(name) + ' 파트너님' : '파트너님') + '</div>';
+    h += '</div></div>';
+
+    h += '<div class="cd">';
+    h += '<div class="ey">리포트 모음</div>';
+    h += '<h2>받아보신 리포트를 다시 볼 수 있어요</h2>';
+
+    if(months.length === 0){
+      h += '<div class="nd">아직 발행된 리포트가 없어요.</div>';
+    } else {
+      h += '<div class="ml-list">';
+      months.forEach(function(m, i){
+        var url = '../?pid=' + encodeURIComponent(pid) + '&month=' + encodeURIComponent(m);
+        h += '<a class="mi" href="' + esc(url) + '">';
+        h += '<div class="mi-b">';
+        h += '<div class="mi-t">' + esc(sendLabel(m)) + ' 리포트';
+        if(i === 0) h += '<span class="badge">최신</span>';
+        h += '</div>';
+        h += '<div class="mi-s">' + esc(dataLabel(m)) + ' 실적 기준</div>';
+        h += '</div>';
+        h += '<svg class="chev" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+        h += '</a>';
+      });
+      h += '</div>';
+    }
+    h += '</div>';
+
+    h += '<div class="ft">문의는 받으신 문자의 번호로 연락주세요.</div>';
+    document.getElementById('root').innerHTML = h;
+  }
+
+  window.__cb = function(res){
+    if(res && res.ok){ render(res); }
+    else if(res && res.error === 'NO_PID'){
+      showState('잘못된 접근입니다.<br>문자로 받으신 링크로 다시 들어와주세요.');
+    }
+    else if(res && res.error === 'NO_REPORT'){
+      showState('아직 발행된 리포트가 없어요.');
+    }
+    else { showState('리포트 목록을 불러오지 못했어요.<br>잠시 후 다시 시도해주세요.'); }
+  };
+
+  function load(){
+    var params = new URLSearchParams(location.search);
+    var pid = params.get('pid');
+    if(!pid){ showState('잘못된 접근입니다.<br>문자로 받으신 링크로 다시 들어와주세요.'); return; }
+    var s = document.createElement('script');
+    s.src = EXEC_URL + '?pid=' + encodeURIComponent(pid)
+          + '&mode=months&callback=__cb';
+    s.onerror = function(){ showState('리포트 목록을 불러오지 못했어요.<br>잠시 후 다시 시도해주세요.'); };
+    document.body.appendChild(s);
+  }
+  load();
+</script>
+</body>
+</html>

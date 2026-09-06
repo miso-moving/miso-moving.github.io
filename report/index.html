@@ -55,6 +55,12 @@
   .tip .tt{font-weight:700;color:#2563EB;margin-bottom:6px}
   .tip .tb{font-size:13.5px;color:#374151}
   .ft{text-align:center;font-size:12px;color:#6B7280;margin:20px 20px 0;line-height:1.7}
+  .arch{display:flex;align-items:center;justify-content:center;gap:6px;
+    margin:13px 16px 0;padding:14px;background:#fff;border-radius:14px;
+    box-shadow:0 1px 3px rgba(0,0,0,.05);text-decoration:none;
+    font-size:14px;font-weight:600;color:#2563EB}
+  .arch svg{width:16px;height:16px;stroke:#2563EB;fill:none;
+    stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .state{background:#fff;border-radius:12px;margin:40px 16px;padding:40px 20px;
     text-align:center;color:#6B7280;font-size:14px;line-height:1.6}
   .exr{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:4px;align-items:center;text-align:center;margin-bottom:4px}
@@ -288,6 +294,9 @@
       h += '<div class="tb">'+esc(res.tip_body)+'</div></div></div>';
     }
 
+    h += '<a class="arch" href="all/?pid=' + encodeURIComponent(d.pid) + '">'
+       + '<svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"></path></svg>'
+       + '지난 리포트 모두 보기</a>';
     h += '<div class="ft">이 리포트는 대표님의 미소방문 활동만으로 작성됐어요.<br>문의는 담당 매니저에게 편하게 연락주세요.</div>';
 
     document.getElementById('root').innerHTML = h;
