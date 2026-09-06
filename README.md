@@ -1,1 +1,2 @@
-# miso-moving.github.io
+# miso-586.github.io
+파트너 공지 문자, 수동매칭 문자, 파트너 리포트 등 보낼 때 보여지는 html 및 링크로 쓰기위해 만듬
